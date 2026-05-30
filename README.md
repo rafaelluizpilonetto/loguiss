@@ -1,6 +1,0 @@
-# loguiss
-
-frontend:
-     npm create vite@latest loguiss-frontend -- --template react (usado para baixar a estrutura de pastas com react e vite)
-     npm install lucide-react  (usado para baixar a biblioteca de itens lucide)
-     npm install
