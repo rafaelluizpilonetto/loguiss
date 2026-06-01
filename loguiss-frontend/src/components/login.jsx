@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { User, Lock, Eye, EyeClosed } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
 
@@ -14,6 +15,8 @@ function Login() {
     const [enviar_formulario, setEnviarFormulario] = useState(false);
 
     const [visualizar_senha, setVisualizarSenha] = useState(false);
+
+    const navigate = useNavigate(); //hook do react-router-dom para navegação programática
 
     function validarEmail() {
         if(!email_tocado && !enviar_formulario){
@@ -73,8 +76,10 @@ function Login() {
         <div className="bg-[url('./images/bg-login.png')] bg-cover bg-center h-screen w-screen flex items-center justify-end pr-[10%]">
 
             <div className="flex flex-col gap-5">
+            
+                <img src="./images/logo.png" alt="Logo do Loguiss" className="w-12 h-12 mx-auto mb-1"/>
 
-                <h1 className="text-3xl font-bold text-white text-center">Bem vindo de volta!!</h1>
+                <h1 className="text-3xl font-semibold text-white text-center">Loguiss</h1>
 
                 <form onSubmit={formularioEnviado} className="bg-white p-10 rounded-sm w-[400px] shadow-lg">
 
@@ -128,7 +133,14 @@ function Login() {
                         </p>
                     )}
 
-                    <a href="#" className="block text-xs text-blue-500 hover:underline">Esqueci minha senha</a>
+                    <button
+                        type="button"
+                        onClick={() => navigate('/esqueceu-senha')} 
+                        className="block text-xs text-blue-500 hover:underline"
+                    >
+                    Esqueci minha senha
+                    </button>
+
 
                     <button 
                         type="submit"
