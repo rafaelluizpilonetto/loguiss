@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Login from './components/login';
 import EsqueceuSenha from './components/esqueceu-senha';
 import CodigoVerificacao from './components/codigo-verificacao';
+import RedefinirSenha from './components/redefinir-senha';
 
 
 function App() {
@@ -20,6 +21,8 @@ function App() {
         <Route path="/esqueceu-senha" element={<EsqueceuSenha />} />
     
         <Route path="/codigo-verificacao" element={<CodigoVerificacao />} />
+
+        <Route path="/redefinir-senha" element={<RedefinirSenha />} />
 
       </Routes>
 

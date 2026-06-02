@@ -44,6 +44,8 @@ function CodigoVerificacao() {
         if (validarCodigo(codigo)) {
             return;
         }
+
+        navigate('/redefinir-senha'); //navega para a tela de redefinir senha se o código for válido
     }
 
     const mostrarErro = enviar_formulario;
@@ -53,6 +55,8 @@ function CodigoVerificacao() {
         <div className="bg-[url('./images/bg-login.png')] bg-cover bg-center h-screen w-screen flex items-center justify-end pr-[10%]">
 
             <div className="flex flex-col gap-5">
+
+                <img src="./images/logo.png" alt="Logo do Loguiss" className="w-12 h-12 mx-auto mb-1"/>
 
                 <h1 className="text-3xl font-semibold text-white text-center">Informar código</h1>
 

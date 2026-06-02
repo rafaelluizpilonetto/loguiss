@@ -48,6 +48,8 @@ function EsqueceuSenha() {
 
             <div className="flex flex-col gap-5">
 
+                <img src="./images/logo.png" alt="Logo do Loguiss" className="w-12 h-12 mx-auto mb-1"/>
+
                 <h1 className="text-3xl font-semibold text-white text-center">Redefinir senha</h1>
 
                 <form onSubmit={ formularioEnviado } className="bg-white p-10 rounded-sm w-[400px] shadow-lg">
