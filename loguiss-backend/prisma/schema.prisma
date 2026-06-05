@@ -9,10 +9,12 @@ datasource db {
 model user {
   id_user      Int    @id @default(autoincrement())
   nome_usuario String
-  email        String
+  email        String @unique
   senha        String
-  cpf          String
+  cpf          String @unique
   senha_pdv    String
-  tipo_user    String @db.VarChar(1)
-  telefone     Int
+  tipo_user    String
+  telefone     String
+  cod_verify   String?
+  expira_em    DateTime?
 }
