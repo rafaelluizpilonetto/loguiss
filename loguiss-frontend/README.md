@@ -1,4 +1,4 @@
-# loguiss
+# loguiss frontend
 
 frontend:
      npm create vite@latest loguiss-frontend -- --template react (usado para baixar a estrutura de pastas com react e vite)
