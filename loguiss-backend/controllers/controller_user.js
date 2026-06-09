@@ -83,7 +83,7 @@ async function cod_verify(req,res) {
     }); 
     try{
         const mailOptions = {
-            from: "christian.darosa0106@gmail.com",
+            from: process.env.EMAIL_APP,
             to: email_existente.email,
             subject: "Código de verificação",
             html: `<div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 40px;">
