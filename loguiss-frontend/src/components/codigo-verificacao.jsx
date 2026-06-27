@@ -1,5 +1,7 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom'; 
+import api from '../services/api_user.js'
+import { use } from 'react';
 
 function CodigoVerificacao() {
 
@@ -10,7 +12,6 @@ function CodigoVerificacao() {
     const [enviar_formulario, setEnviarFormulario] = useState(false);
 
     const inputRefs = useRef([]); // Array para armazenar as referências dos inputs
-
     function atualizarCodigo(e, index) {
 
         const valor = e.target.value;
@@ -36,8 +37,32 @@ function CodigoVerificacao() {
         return "";
     } //função para validar o código de verificação, verificando se os 6 dígitos foram preenchidos
 
-    function formularioEnviado(e) {
+    // const codDigitado = inputRefs.join("")
+    const codigoArray = inputRefs.current // aqui vai "tranformar" o array do html para um convencional que de para usar de boa
+    .map(input => input?.value || "")
+    .join("");
+
+
+    async function formularioEnviado(e) {
         e.preventDefault();
+
+        console.log(localStorage.getItem("token"))
+
+        try{
+            const resposta = await api.post('/verify_cod', {
+                token_email: localStorage.getItem("token"),
+                user_cod_verify: codigoArray
+            })
+
+            localStorage.setItem("token", resposta.data.token)
+            console.log(resposta.data.token)
+
+
+        }catch(error){
+            console.log(error)
+        }
+
+
 
         setEnviarFormulario(true);
 

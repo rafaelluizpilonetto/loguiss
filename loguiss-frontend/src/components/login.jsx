@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { User, Lock, Eye, EyeClosed } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import api from './../services/api_user.js'
 
 function Login() {
 
@@ -67,10 +68,27 @@ function Login() {
             return;
         }
     }
-
     const erro_email = validarEmail();
     const erro_senha = validarSenha();
 
+
+
+    const email_ref = useRef();
+    const senha_ref = useRef();
+
+    async function login(e) {
+        // e.preventDefault();
+
+        const resposta = await api.post('/login',{
+            email: email_ref.current.value, // pega o valor atual que foi digitado no input e manda para o back 
+            senha: senha_ref.current.value // mesma lógica do email
+        })
+        console.log(resposta.data)
+        localStorage.setItem("token", resposta.data.token)
+
+        navigate()// aqui somente vai ser usado quando tiver a próxima página
+
+    }
     return (
 
         <div className="bg-[url('./images/bg-login.png')] bg-cover bg-center h-screen w-screen flex items-center justify-end pr-[10%]">
@@ -94,6 +112,7 @@ function Login() {
                             onChange={(e) => setEmail(e.target.value)} //atualiza o estado do email quando o usuário digitar
                             onBlur={() => setEmailTocado(true)} //atualiza o estado de email_tocado para true quando o campo de email perder o foco
                             value={email}
+                            ref={email_ref}
                         />
 
                     </div>
@@ -115,6 +134,7 @@ function Login() {
                             onChange={(e) => setSenha(e.target.value)} //atualiza o estado da senha quando o usuário digitar
                             onBlur={() => setSenhaTocada(true)} //atualiza o estado de senha_tocada para true quando o campo de senha perder o foco
                             value={senha}
+                            ref={senha_ref}
                         />
 
                        <button
@@ -145,6 +165,7 @@ function Login() {
                     <button 
                         type="submit"
                         className="w-full p-3 cursor-pointer mt-5 bg-[#4EDB4E] border-none rounded-sm text-white font-bold hover:bg-[#3CB43C] transition-colors duration-300"
+                        onClick={() => login()}
                     >
                     Entrar
                     </button>

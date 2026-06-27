@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { User } from 'lucide-react';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
+import api from '../services/api_user.js'
 
 function EsqueceuSenha() {
 
@@ -11,6 +12,8 @@ function EsqueceuSenha() {
     const email_formato_valido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); //verificar se o email tem um formato válido
 
     const [enviar_formulario, setEnviarFormulario] = useState(false);
+
+    const [loading, setLoading] = useState(false); //para o "loading" na hora de enviar o email
 
     const navigate = useNavigate();
 
@@ -27,8 +30,24 @@ function EsqueceuSenha() {
         return "";
     }
 
-    function formularioEnviado(e) {
+    const email_ref = useRef()
+
+
+    async function formularioEnviado(e) {
         e.preventDefault();
+
+
+        try{
+            setLoading(true); // ativa o "loading"
+            const resposta = await api.post('/cod_verify', {
+                email: email_ref.current.value
+            });
+            localStorage.setItem("token", resposta.data.token)
+        
+
+        }catch(error){
+            console.log(error)
+        }
 
         setEnviarFormulario(true);
         setEmailTocado(true);
@@ -41,6 +60,7 @@ function EsqueceuSenha() {
     }
 
     const mostrarErro = email_tocado || enviar_formulario;
+
 
     return (
 
@@ -69,6 +89,7 @@ function EsqueceuSenha() {
                             onChange={(e) => setEmail(e.target.value)} //atualiza o estado do email quando o usuário digitar
                             onBlur={() => setEmailTocado(true)} //atualiza o estado de email_tocado para true quando o campo de email perder o foco
                             value={email}
+                            ref={email_ref}
                         />
 
                     </div>
@@ -82,8 +103,10 @@ function EsqueceuSenha() {
                     <button 
                         type="submit"
                         className="w-full p-3 cursor-pointer mt-5 bg-[#4EDB4E] border-none rounded-sm text-white font-bold hover:bg-[#3CB43C] transition-colors duration-300"
+                        onClick={()=> formularioEnviado}
+                        disabled={loading} //  é um if simplificado, que muda enquanto o back não responde
                     >
-                    Verificar email e enviar código
+                    {loading ? "Enviando..." : "Enviar código"} 
                     </button>
 
                     <button 

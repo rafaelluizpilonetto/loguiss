@@ -10,6 +10,10 @@ const senha_app = process.env.SENHA_APP
 async function Login (req,res) {
     const {email , senha} = req.body
 
+    if(!email || !senha){
+        return res.status(400).json({MGS: "informa certo"})
+    }
+
     try{
         const usuario_achado = await prisma.user.findFirst({
             where:{
@@ -46,6 +50,7 @@ async function Login (req,res) {
 async function cod_verify(req,res) {
     const {email} = req.body
 
+
     const email_existente = await prisma.user.findUnique({  // tenta achar um email igual no servidor
         where:{
             email: email
@@ -54,6 +59,7 @@ async function cod_verify(req,res) {
     if(!email_existente){
         return res.status(404).json({MSG: "Email não existe!! faça o cadastro"})
     }
+    
 
     const codigo_verify = String(Math.floor(100000 + Math.random() * 90000))
 
@@ -80,7 +86,19 @@ async function cod_verify(req,res) {
         user: "christian.darosa0106@gmail.com",
         pass: senha_app
     }
-    }); 
+    });
+    
+    const token = jwt.sign({ // cria um token jwt para ser usado na hora de recuperar senha
+                            // isso só vai servir para ter uma maior segurança 
+        id: email_existente.id_user,
+        email: email_existente.email,
+    },
+        chave_jwt,
+    {
+        expiresIn: "10m"
+    });
+
+
     try{
         const mailOptions = {
             from: process.env.EMAIL_APP,
@@ -142,19 +160,23 @@ async function cod_verify(req,res) {
     console.error(erro);
 }
 
-    return res.status(201).json({MSG: "token criado e email enviado"})
+    return res.status(201).json({MSG: "Token criado e email enviado", token: token})
         
 }
 
 async function verify_cod(req,res) {
-    const {email, user_cod_verify} = req.body // pega o email e o código(que o user digitou) vindo do front
+    const {token_email, user_cod_verify} = req.body // pega o email e o código(que o user digitou) vindo do front
 
+    const token_decodificado = jwt.verify(token_email, chave_jwt)
+
+    console.log(user_cod_verify)
     const email_existente = await prisma.user.findFirst({ //primeiro procura para ver se bate com algum usuário do banco
         where:{
-            email:email,
+            email:token_decodificado.email,
             cod_verify: user_cod_verify
         }
     })
+    console.log(email_existente)
     if(!email_existente){ // se não bater com nenhum, o token é inválido
         return res.status(404).json({MSG:"token inválido, por favor insira novamente"})
     }
@@ -187,8 +209,12 @@ async function recuperar_senha(req, res){
         const usuario = req.user
         const {senha_user, confirm_senha_user} = req.body 
         
+        if(!senha_user || !confirm_senha_user){
+            return res.status(400).json({MSG: "Informe a senha nos campos!!"})
+        }
+
         if(senha_user != confirm_senha_user){
-            return res.status(403).json({MSG: ""})
+            return res.status(403).json({MSG: "senhas não correspondem, favor informar novamente!!"})
         }
 
         await prisma.user.update({
@@ -205,6 +231,10 @@ async function recuperar_senha(req, res){
         console.log(error)
     }
     
+}
+
+async function cadastro_user(req, res) {
+    const {email, senha, cpf, telefone, nome} = req.body
 }
 
 
