@@ -2,11 +2,12 @@ import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 //telas
-import Login from './components/login';
-import EsqueceuSenha from './components/esqueceu-senha';
-import Cadastrar from './components/cadastrar';
-import CodigoVerificacao from './components/codigo-verificacao';
-import RedefinirSenha from './components/redefinir-senha';
+import Login from './pages/login'
+import EsqueceuSenha from './pages/esqueceu-senha';
+import CodigoVerificacao from './pages/codigo-verificacao';
+import RedefinirSenha from './pages/redefinir-senha';
+import Termos from './pages/termos';
+import Politicas from './pages/politicas';
 
 
 function App() {
@@ -21,11 +22,13 @@ function App() {
 
         <Route path="/esqueceu-senha" element={<EsqueceuSenha />} />
 
-        <Route path="/cadastrar" element={<Cadastrar />} />
-
         <Route path="/codigo-verificacao" element={<CodigoVerificacao />} />
 
         <Route path="/redefinir-senha" element={<RedefinirSenha />} />
+
+        <Route path="/termos" element={<Termos />} />
+
+        <Route path="/politicas" element={<Politicas />} />
 
       </Routes>
 
