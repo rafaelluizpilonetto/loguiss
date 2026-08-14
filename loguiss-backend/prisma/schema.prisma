@@ -15,6 +15,16 @@ model user {
   senha_pdv    String
   tipo_user    String
   telefone     String
-  cod_verify   String?
-  expira_em    DateTime?
+  email_verificado Boolean @default(false)
+
+  verificacao verificacao_user?
+}
+model verificacao_user {
+  id_verificacao   String   @id @default(uuid())
+
+  cod_verify       String?
+  expira_em   DateTime?
+
+  id_user    Int      @unique
+  usuario    user     @relation(fields: [id_user], references: [id_user], onDelete: Cascade)
 }

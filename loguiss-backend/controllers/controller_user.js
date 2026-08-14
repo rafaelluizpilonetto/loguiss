@@ -1,11 +1,12 @@
 import { prisma } from '../database.js';
 import jwt from 'jsonwebtoken';
 import nodemailer from "nodemailer";
+// import cpf from 'cpf-cnpj-validator';
 
 
 const chave_jwt = process.env.CHAVE_JWT // pega a chave dos JWTs da .env
 const senha_app = process.env.SENHA_APP
-
+// const cpf_validator = cpf()
 
 async function Login (req,res) {
     const {email , senha} = req.body
@@ -67,23 +68,23 @@ async function cod_verify(req,res) {
 
     expira_em.setMinutes(expira_em.getMinutes() + 15) // aqui  vai pegar a hora atual e adicionar mais 15 minutos
 
-    await prisma.user.update({
+    await prisma.verificacao_user.update({
         where:{
-            id_user: email_existente.id_user
+            id_user: email_existente.id_user,
         },
         data:{
             cod_verify: codigo_verify,
             expira_em: expira_em
-
-        }
+        },
 
     })
+
     console.log(email_existente.email)
 
     const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-        user: "christian.darosa0106@gmail.com",
+        user: process.env.EMAIL_APP,
         pass: senha_app
     }
     });
@@ -100,7 +101,7 @@ async function cod_verify(req,res) {
 
 
     try{
-        const mailOptions = {
+        const mailOptions = { // funcão principal para enviar email
             from: process.env.EMAIL_APP,
             to: email_existente.email,
             subject: "Código de verificação",
@@ -173,7 +174,12 @@ async function verify_cod(req,res) {
     const email_existente = await prisma.user.findFirst({ //primeiro procura para ver se bate com algum usuário do banco
         where:{
             email:token_decodificado.email,
-            cod_verify: user_cod_verify
+            verificacao:{
+                cod_verify: user_cod_verify
+            }
+        },
+        include:{
+            verificacao: true
         }
     })
     console.log(email_existente)
@@ -192,7 +198,7 @@ async function verify_cod(req,res) {
                             // isso só vai servir para ter uma maior segurança 
         id: email_existente.id_user,
         email: email_existente.email,
-        codigo_verify: email_existente.cod_verify
+        codigo_verify: email_existente.verificacao.cod_verify
     },
         chave_jwt,
     {
@@ -208,15 +214,15 @@ async function recuperar_senha(req, res){
     try{
         const usuario = req.user
         const {senha_user, confirm_senha_user} = req.body 
-        
+        // valida se veio tudo que está sendo esperado
         if(!senha_user || !confirm_senha_user){
             return res.status(400).json({MSG: "Informe a senha nos campos!!"})
         }
-
+        // verifica se as senhas são iguais
         if(senha_user != confirm_senha_user){
             return res.status(403).json({MSG: "senhas não correspondem, favor informar novamente!!"})
         }
-
+        // atualiza a senha do usuario
         await prisma.user.update({
             where:{
                 id_user: usuario.id
@@ -234,8 +240,131 @@ async function recuperar_senha(req, res){
 }
 
 async function cadastro_user(req, res) {
-    const {email, senha, cpf, telefone, nome} = req.body
+    const {email, senha, confirm_senha_user, cpf, telefone, nome_usuario} = req.body
+    
+    // aqui valida se está vindo tudo que é esperado
+    if(!email || !senha || !confirm_senha_user || !cpf || !telefone || !nome_usuario){
+        return res.status(406).json({MSG: "favor conferir se todos os dados foram preenchidos corretamente!!"})
+    }
+    // senhas precisam ser iguais
+    if(senha != confirm_senha_user){
+        return re.status(406).json({MSG: "as senhas devem ser iguais!!"})
+    }
+    if(!cpf.isValid(cpf)){
+        return res.status(400).json({MGS: "informe um cpf válido"})
+    }
+
+
+    // aqui é feita a validação do cpf no sistema (só pode existir um no sistema)
+    try{
+        let user_encontrado = prisma.user.findFirst({
+            where:{
+                cpf: cpf
+            }
+        })
+        if(user_encontrado != null || user_encontrado != undefined ){
+            return res.status(409).json({MSG: "CPF já cadastrado!! favor insira um cpf válido!"})
+        }
+
+
+    }catch(error){
+        console.log(error)
+    }
+
+    try{         //aqui valida se o email já existe no banco
+        let user_encontrado = prisma.user.findFirst({
+            where:{
+                email: email
+            }
+        })
+        if(user_encontrado != null || user_encontrado != undefined){
+            return res.status(409).json({MSG: "Email já existe em banco!! favor inserir um email não utilizado"})
+        }
+
+    }catch(error){
+        console.log(error)
+    }
+
+
+
+
+
+
+    
+
+
+
+    const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+        user: process.env.EMAIL_APP,
+        pass: senha_app
+    }
+    });
+
+   try{
+        const mailOptions = { // funcão principal para enviar email
+            from: process.env.EMAIL_APP,
+            to: user_encontrado.email,
+            subject: "Validação de E-mail",
+            html: `<div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 40px;">
+        <div style="
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+        ">
+            
+            <h1 style="color: #2e7d32; margin-bottom: 10px;">
+            Validação de E-mail
+            </h1>
+
+            <p style="color: #555; font-size: 16px;">
+            Recebemos uma solicitação para confirmar sua identidade.
+            </p>
+
+            <p style="color: #555; font-size: 16px;">
+            Utilize o link abaixo:
+            </p>
+
+            <div style="
+            background: #e8f5e9;
+            color: #2e7d32;
+            font-size: 32px;
+            font-weight: bold;
+            letter-spacing: 8px;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            ">
+            ${codigo_verify}
+            </div>
+
+            <p style="color: #777; font-size: 14px;">
+            Este código expira em 10 minutos.
+            </p>
+
+            <hr style="border: none; border-top: 1px solid #eee; margin: 25px 0;">
+
+            <p style="color: #999; font-size: 12px;">
+            Se você não solicitou este código, ignore este e-mail.
+            </p>
+
+        </div>
+        </div>`
+        };
+        const resposta = await transporter.sendMail(mailOptions);
+
+        console.log(resposta)
+    }catch (erro) {
+    console.error(erro);
 }
 
 
-export default {Login, cod_verify, verify_cod, recuperar_senha}
+}
+
+
+export default {Login, cod_verify, verify_cod, recuperar_senha, cadastro_user}

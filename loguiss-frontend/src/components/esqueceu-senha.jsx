@@ -64,60 +64,89 @@ function EsqueceuSenha() {
 
     return (
 
-        <div className="bg-[url('./images/bg-login.png')] bg-cover bg-center h-screen w-screen flex items-center justify-end pr-[10%]">
+         <div className="bg-[#050212] h-screen w-screen flex items-center justify-center ">
 
             <div className="flex flex-col gap-5">
 
-                <img src="./images/logo.png" alt="Logo do Loguiss" className="w-12 h-12 mx-auto mb-1"/>
+                <svg
+                    className="absolute top-0 left-0 w-[320px] h-[250px] pointer-events-none"
+                    viewBox="0 0 320 250"
+                    fill="none"
+                >
+                    <path
+                    d="M0 0H180C130 60 90 120 0 160V0Z"
+                    fill="#4EDB4E"
+                    />
+                </svg>
 
-                <h1 className="text-3xl font-semibold text-white text-center">Redefinir senha</h1>
+                <svg
+                    className="absolute bottom-0 right-0 w-[450px] h-[320px] pointer-events-none"
+                    viewBox="0 0 450 320"
+                    fill="none"
+                >
+                    <path
+                    d="M450 320H0C180 280 320 220 390 100C410 60 425 20 450 0V320Z"
+                    fill="#4EDB4E"
+                    />
+                </svg>
 
-                <form onSubmit={ formularioEnviado } className="bg-white p-10 rounded-sm w-[400px] shadow-lg">
-                    
-                    <p className="text-center text-gray-600 mb-5">
-                        Insira seu email cadastrado para receber as instruções de redefinição de senha.
-                    </p>
+                <div className="flex w-full max-w-6xl rounded-xl overflow-hidden shadow-2xl">
 
-                    <div className="flex items-center gap-3 bg-gray rounded-sm  p-3 border border-gray-200 mb-4">
+                    <aside className="hidden lg:flex w-1/2 bg-[#0D0B12] items-center justify-center">
 
-                        <User size={20} />
+                        <img src="./images/imagem-estoque.png" alt="Imagem de estoque" className="w-full h-full"/>
 
-                        <input
-                            type="text"
-                            placeholder="Email"
-                            className="w-full outline-none bg-transparent"
-                            onChange={(e) => setEmail(e.target.value)} //atualiza o estado do email quando o usuário digitar
-                            onBlur={() => setEmailTocado(true)} //atualiza o estado de email_tocado para true quando o campo de email perder o foco
-                            value={email}
-                            ref={email_ref}
-                        />
+                    </aside>
+                
+                    <form onSubmit={ formularioEnviado } className="bg-[#100E14] p-10 rounded-sm w-[400px] shadow-lg">
 
-                    </div>
-
-                    {mostrarErro && validarEmail(email) && (
-                        <p className="text-red-500 text-sm mb-3">
-                            {validarEmail(email)}
+                        <img src="./images/logo.png" alt="Logo da Loguiss" className="w-20 h-20 mx-auto mb-4 rounded-xl"/>
+                        
+                        <p className="text-center text-green-500 mb-5">
+                            Insira seu email cadastrado para receber as instruções de redefinição de senha.
                         </p>
-                    )}
 
-                    <button 
-                        type="submit"
-                        className="w-full p-3 cursor-pointer mt-5 bg-[#4EDB4E] border-none rounded-sm text-white font-bold hover:bg-[#3CB43C] transition-colors duration-300"
-                        onClick={()=> formularioEnviado}
-                        disabled={loading} //  é um if simplificado, que muda enquanto o back não responde
-                    >
-                    {loading ? "Enviando..." : "Enviar código"} 
-                    </button>
+                        <div className="flex items-center gap-3 bg-gray rounded-sm  p-3 border border-gray-200 mb-4">
 
-                    <button 
-                        type="button"
-                        onClick={() => navigate('/login')} 
-                        className="w-full p-3 cursor-pointer mt-5 bg-[#0B0819] border-none rounded-sm text-white font-bold hover:bg-[#170F3C] transition-colors duration-300"
-                    >
-                    Voltar para login
-                    </button>
+                            <User size={20} />
 
-                </form>
+                            <input
+                                type="text"
+                                placeholder="Email"
+                                className="w-full outline-none bg-transparent text-white"
+                                onChange={(e) => setEmail(e.target.value)} //atualiza o estado do email quando o usuário digitar
+                                onBlur={() => setEmailTocado(true)} //atualiza o estado de email_tocado para true quando o campo de email perder o foco
+                                value={email}
+                                ref={email_ref}
+                            />
+
+                        </div>
+
+                        {mostrarErro && validarEmail(email) && (
+                            <p className="text-red-500 text-sm mb-3">
+                                {validarEmail(email)}
+                            </p>
+                        )}
+
+                        <button 
+                            type="submit"
+                            className="w-full p-3 cursor-pointer mt-5 bg-[#4EDB4E] border-none rounded-sm text-white font-bold hover:bg-[#3CB43C] transition-colors duration-300"
+                            onClick={() => formularioEnviado()}
+                        >
+                        Verificar email e enviar código
+                        </button>
+
+                        <button 
+                            type="button"
+                            onClick={() => navigate('/login')} 
+                            className="w-full p-3 cursor-pointer mt-5 bg-[#0B0819] border-none rounded-sm text-white font-bold hover:bg-[#170F3C] transition-colors duration-300"
+                        >
+                        Voltar para login
+                        </button>
+
+                    </form>
+
+                </div>
 
             </div>
 
@@ -126,3 +155,6 @@ function EsqueceuSenha() {
 }
 
 export default EsqueceuSenha;
+
+
+

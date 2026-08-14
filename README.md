@@ -200,6 +200,7 @@ npm install nodemailer
 npm install dotenv
 npm install cors
 npm install jsonwebtoken
+npm install cpf-cnpj-validator
 ```
 
 ---
