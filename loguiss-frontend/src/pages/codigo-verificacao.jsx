@@ -3,39 +3,58 @@ import { useNavigate } from 'react-router-dom';
 import api from '../services/api_user.js'
 import { use } from 'react';
 
+import { Button } from '../components/button';
+
 function CodigoVerificacao() {
 
     const navigate = useNavigate();
 
-    const [codigo, setCodigo] = useState(['', '', '', '', '', '']); //estado para armazenar os valores dos 6 inputs do código de verificação
-
     const [enviar_formulario, setEnviarFormulario] = useState(false);
+
+    const [codigo, setCodigo] = useState(['', '', '', '', '', '']); //estado para armazenar os valores dos 6 inputs do código de verificação
 
     const inputRefs = useRef([]); // Array para armazenar as referências dos inputs
     function atualizarCodigo(e, index) {
-
-        const valor = e.target.value;
-
+        const valor = (e.target.value || '').replace(/\D/g, '').slice(-1); // garante 1 dígito numérico
         const novoCodigo = [...codigo];
         novoCodigo[index] = valor;
-
         setCodigo(novoCodigo);
 
         if (valor && index < 5) {
-            inputRefs.current[index + 1].focus();
+            inputRefs.current[index + 1]?.focus();
         }
-    } //função para atualizar o estado do código de verificação e mover o foco para o próximo input automaticamente
+    }
 
-    function validarCodigo(codigo) {
-
-        const codigoCompleto = codigo.join('');
-
-        if (codigoCompleto.length !== 6) {
+    function validarCodigo(codigoParam) {
+        // aceita array ou string
+        const codigoStr = Array.isArray(codigoParam) ? codigoParam.join('') : String(codigoParam || '');
+        if (codigoStr.length !== 6) {
             return "Informe os 6 dígitos do código de verificação";
         }
-
         return "";
-    } //função para validar o código de verificação, verificando se os 6 dígitos foram preenchidos
+    }
+    
+    function handleKeyDown(e, index) {
+        if (e.key === 'Backspace') {
+            // se tem valor no campo atual -> apaga ele
+            if (codigo[index]) {
+                e.preventDefault();
+                const novo = [...codigo];
+                novo[index] = '';
+                setCodigo(novo);
+                return;
+            }
+            // se campo atual vazio, volta e apaga o anterior
+            if (!codigo[index] && index > 0) {
+                e.preventDefault();
+                const prev = index - 1;
+                const novo = [...codigo];
+                novo[prev] = '';
+                setCodigo(novo);
+                inputRefs.current[prev]?.focus();
+            }
+        }
+    }
 
     // const codDigitado = inputRefs.join("")
     const codigoArray = inputRefs.current // aqui vai "tranformar" o array do html para um convencional que de para usar de boa
@@ -66,7 +85,7 @@ function CodigoVerificacao() {
 
         setEnviarFormulario(true);
 
-        if (validarCodigo(codigo)) {
+        if (validarCodigo(codigo.join(''))) {
             return;
         }
 
@@ -80,28 +99,6 @@ function CodigoVerificacao() {
         <div className="bg-[#050212] h-screen w-screen flex items-center justify-center ">
 
             <div className="flex flex-col gap-5">
-
-                <svg
-                    className="absolute top-0 left-0 w-[320px] h-[250px] pointer-events-none"
-                    viewBox="0 0 320 250"
-                    fill="none"
-                >
-                    <path
-                    d="M0 0H180C130 60 90 120 0 160V0Z"
-                    fill="#4EDB4E"
-                    />
-                </svg>
-
-                <svg
-                    className="absolute bottom-0 right-0 w-[450px] h-[320px] pointer-events-none"
-                    viewBox="0 0 450 320"
-                    fill="none"
-                >
-                    <path
-                    d="M450 320H0C180 280 320 220 390 100C410 60 425 20 450 0V320Z"
-                    fill="#4EDB4E"
-                    />
-                </svg>
 
                 <div className="flex w-full max-w-6xl rounded-xl overflow-hidden shadow-2xl">
 
@@ -123,80 +120,97 @@ function CodigoVerificacao() {
 
                             <input
                                 type="text"
+                                inputMode="numeric"
                                 maxLength="1"
+                                value={codigo[0]}
                                 className="w-10 h-10 text-center text-green-500 text-sm font-bold border border-gray-300 rounded-sm"
                                 onChange={(e) => atualizarCodigo(e, 0)}
+                                onKeyDown={(e) => handleKeyDown(e, 0)}
                                 ref={(el) => (inputRefs.current[0] = el)}
                                 autoComplete="off"
                             />
 
                             <input
                                 type="text"
+                                inputMode="numeric"
                                 maxLength="1"
+                                value={codigo[1]}
                                 className="w-10 h-10 text-center text-green-500 text-sm font-bold border border-gray-300 rounded-sm"
                                 onChange={(e) => atualizarCodigo(e, 1)}
+                                onKeyDown={(e) => handleKeyDown(e, 1)}
                                 ref={(el) => (inputRefs.current[1] = el)}
                                 autoComplete="off"
                             />
 
                             <input
                                 type="text"
+                                inputMode="numeric"
                                 maxLength="1"
+                                value={codigo[2]}
                                 className="w-10 h-10 text-center text-green-500 text-sm font-bold border border-gray-300 rounded-sm"
                                 onChange={(e) => atualizarCodigo(e, 2)}
+                                onKeyDown={(e) => handleKeyDown(e, 2)}
                                 ref={(el) => (inputRefs.current[2] = el)}
                                 autoComplete="off"
                             />
 
                             <input
                                 type="text"
+                                inputMode="numeric"
                                 maxLength="1"
+                                value={codigo[3]}
                                 className="w-10 h-10 text-center text-green-500 text-sm font-bold border border-gray-300 rounded-sm"
                                 onChange={(e) => atualizarCodigo(e, 3)}
+                                onKeyDown={(e) => handleKeyDown(e, 3)}
                                 ref={(el) => (inputRefs.current[3] = el)}
                                 autoComplete="off"
                             />
 
                             <input
                                 type="text"
+                                inputMode="numeric"
                                 maxLength="1"
+                                value={codigo[4]}
                                 className="w-10 h-10 text-center text-green-500 text-sm font-bold border border-gray-300 rounded-sm"
                                 onChange={(e) => atualizarCodigo(e, 4)}
+                                onKeyDown={(e) => handleKeyDown(e, 4)}
                                 ref={(el) => (inputRefs.current[4] = el)}
                                 autoComplete="off"
                             />
 
                             <input
                                 type="text"
+                                inputMode="numeric"
                                 maxLength="1"
+                                value={codigo[5]}
                                 className="w-10 h-10 text-center text-green-500 text-sm font-bold border border-gray-300 rounded-sm"
                                 onChange={(e) => atualizarCodigo(e, 5)}
+                                onKeyDown={(e) => handleKeyDown(e, 5)}
                                 ref={(el) => (inputRefs.current[5] = el)}
                                 autoComplete="off"
                             />
 
                         </div>
 
-                        {mostrarErro && validarCodigo(codigo) && (
+                        {mostrarErro && validarCodigo(codigo.join('')) && (
                             <p className="text-red-500 text-sm mb-3">
-                                {validarCodigo(codigo)}
+                                {validarCodigo(codigo.join(''))}
                             </p>
                         )}
 
-                        <button
+                        <Button 
                             type="submit"
-                            className="w-full p-3 mt-5 bg-[#4EDB4E] text-white rounded-sm font-bold hover:bg-[#3CB43C]"
-                        >
-                            Confirmar código de verificação
-                        </button>
+                            className="bg-[#4EDB4E] hover:bg-[#3CB43C]">
+                            Verificar código
+                        </Button>
 
-                        <button 
+                        <Button
                             type="button"
-                            onClick={() => navigate('/login')} 
-                            className="w-full p-3 cursor-pointer mt-5 bg-[#0B0819] border-none rounded-sm text-white font-bold hover:bg-[#170F3C] transition-colors duration-300"
+                            className="bg-[#0B0819] hover:bg-[#170F3C]"
+                            onClick={() => navigate('/login')}
                         >
-                        Voltar para login
-                        </button>
+                            Voltar para o login
+                        </Button>
 
                     </form>
    
@@ -209,8 +223,3 @@ function CodigoVerificacao() {
 }
 
 export default CodigoVerificacao;
-
-
-
-
-
