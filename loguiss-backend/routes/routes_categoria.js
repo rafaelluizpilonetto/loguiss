@@ -4,7 +4,10 @@ import controller from '../controllers/controller_categoria/controller_categoria
 const router_categoria = express.Router();
 
 router_categoria.post('/create_categoria', (req, res)=> {
-    controller.create_categoria(req, res);
+    controller.criar_categoria(req, res);   
+})
+router_categoria.patch('/edit_categoria', (req, res)=>{
+    controller.editar_categoria(req,res)
 })
 
 
