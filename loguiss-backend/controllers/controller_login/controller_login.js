@@ -20,4 +20,4 @@ async function recuperar_senha(req, res){
 
 
 
-export default {Login, cod_verify, verify_cod, recuperar_senha, cadastro_user}
+export default {Login, cod_verify, verify_cod, recuperar_senha}

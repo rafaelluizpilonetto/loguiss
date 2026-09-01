@@ -1,4 +1,5 @@
 import { create_categoria } from '../../services/categoria_service/create_categoria.service.js'
+import { delete_categoria } from '../../services/categoria_service/delete_categoria.service.js';
 import { edit_categoria } from '../../services/categoria_service/edit_categoria.service.js';
 
 
@@ -12,5 +13,9 @@ async function editar_categoria(req, res) {
     
 }
 
-export default { criar_categoria, editar_categoria}
+async function apagar_categoria(req, res) {
+    await delete_categoria(req, res)
+}
+
+export default { criar_categoria, editar_categoria, apagar_categoria}
 
