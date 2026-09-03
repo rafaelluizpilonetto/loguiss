@@ -4,7 +4,7 @@ import { prisma } from '../../database.js';
 export async function edit_categoria(req, res){
     const {descricao, status, id_categoria} = req.body;
 
-    if(!descricao && !status){
+    if(!descricao || !status){
         return res.status(400).json({MSG: "Para editar precisa mandar pelo menos um parâmetro!!"})
     }
     if(!id_categoria){

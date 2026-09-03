@@ -1,14 +1,13 @@
 // import { prisma } from '../database.js';
-import { create_produto } from '../../services/produto_service/create_produto.service.js'
+import { create_produto_service } from '../../services/produto_service/create_produto.service.js'
 
 
-export async function create_produto(req, res) {
-    const produto = await create_produto(req, res);
 
-    return res.status(200).json({MSG: "Produto criado com sucesso!!"})
+async function create_produto(req, res) {
+    await create_produto_service(req, res);
 }
 
-
+export default {create_produto}
 
 
 // produto.controller.js
