@@ -12,8 +12,6 @@ function EsqueceuSenha() {
 
     const [email_tocado, setEmailTocado] = useState(false);
 
-    const email_formato_valido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); //verificar se o email tem um formato válido
-
     const [enviar_formulario, setEnviarFormulario] = useState(false);
 
     const navigate = useNavigate();

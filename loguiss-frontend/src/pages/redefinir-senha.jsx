@@ -3,7 +3,7 @@ import { Lock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 import { Inputs } from '../components/inputs';
-import { Button_eye } from '../components/button_eye';
+import { ButtonEye } from '../components/buttonEye';
 import { Button } from '../components/button';
 import {validarSenha} from '../utils/validacoes';
 
@@ -107,7 +107,7 @@ function RedefinirSenha() {
                             touched={senha_tocada || enviar_formulario}
                             icon={Lock}
                             rightElement={
-                                <Button_eye
+                                <ButtonEye
                                     visualizar_senha={visualizar_senha}
                                     setVisualizarSenha={setVisualizarSenha}
                                 />
@@ -124,7 +124,7 @@ function RedefinirSenha() {
                             touched={confirmar_senha_tocada || enviar_formulario}
                             icon={Lock}
                             rightElement={
-                                <Button_eye
+                                <ButtonEye
                                     visualizar_senha={visualizar_confirmar_senha}
                                     setVisualizarSenha={setVisualizarConfirmarSenha}
                                 />
