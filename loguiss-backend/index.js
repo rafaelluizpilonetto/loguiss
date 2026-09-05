@@ -9,7 +9,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
-app.use("/user", router_login)
+app.use("/login", router_login)
 app.use("/categoria", router_categoria)
 app.use("/receita", router_receita)
 app.use("/produto", router_produto)

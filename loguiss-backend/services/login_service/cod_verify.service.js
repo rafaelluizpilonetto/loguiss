@@ -5,7 +5,7 @@ import nodemailer from "nodemailer";
 
 const chave_jwt = process.env.CHAVE_JWT // pega a chave dos JWTs da .env
 const senha_app = process.env.SENHA_APP
-
+const email_app = process.env.EMAIL_APP
 
 export async function Cod_verify(req,res) {
     const {email} = req.body
@@ -47,7 +47,7 @@ export async function Cod_verify(req,res) {
         const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
-            user: process.env.EMAIL_APP,
+            user: email_app,
             pass: senha_app
         }
         });

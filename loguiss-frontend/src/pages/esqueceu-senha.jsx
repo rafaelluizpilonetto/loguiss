@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import api from '../services/api_user.js'
+import api from '../services/api_login.js'
 
 import { Inputs } from '../components/inputs';
 import { Button } from '../components/button';
@@ -12,8 +12,6 @@ function EsqueceuSenha() {
     const [email, setEmail] = useState(''); 
 
     const [email_tocado, setEmailTocado] = useState(false);
-
-    const email_formato_valido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); //verificar se o email tem um formato válido
 
     const [enviar_formulario, setEnviarFormulario] = useState(false);
 

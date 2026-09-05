@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, Lock } from 'lucide-react';
 
 //importação de components e funções reutilizáveis
 import { validarEmail, validarSenha } from '../utils/validacoes';
 import { Button } from '../components/button';
-import { Button_eye } from '../components/button_eye';
+import { ButtonEye } from '../components/buttonEye';
 import { Inputs } from '../components/inputs';
+import api_login from '../services/api_login.js';
 
 function Login() {
 
@@ -23,7 +24,7 @@ function Login() {
     const navigate = useNavigate(); //hook do react-router-dom para navegação programática
 
 
-    function formularioEnviado(e) {
+    async function formularioEnviado(e) {
         e.preventDefault();
 
         setEnviarFormulario(true);
@@ -33,6 +34,24 @@ function Login() {
 
         if (validarEmail(email) || validarSenha(senha)) {
             return;
+        }
+        try {
+            const resposta_login = await api_login.post('/login',{
+                email: email,
+                senha: senha
+            })
+
+            if(resposta_login.status === 200){
+            localStorage.setItem ("token", resposta_login.data.token) 
+            
+            console.log(resposta_login)
+
+            navigate('/home');
+            }  
+        } catch (error) {
+            if(error.response?.status === 401){
+                console.log("senha ou usúario errado!")
+            }
         }
 
     }
@@ -78,8 +97,9 @@ function Login() {
                                 error={erro_email}
                                 touched={email_tocado || enviar_formulario}
                                 icon={User}
+                                className="rounded-lg border focus:border-[#4EDB4E] w-full"
                             />
-
+                            
                         </div>
 
                         {erro_email && (
@@ -99,14 +119,15 @@ function Login() {
                                 error={erro_senha}
                                 touched={senha_tocada || enviar_formulario}
                                 icon={Lock}
+                                className="rounded-lg border focus:border-[#4EDB4E] w-full"
                                 rightElement={
-                                    <Button_eye
+                                    <ButtonEye
                                         visualizar_senha={visualizar_senha}
                                         setVisualizarSenha={setVisualizarSenha}
                                     />
                                 }
                             />
-
+                            
                         </div>
 
                         {erro_senha && (
@@ -128,7 +149,7 @@ function Login() {
 
                         <Button 
                             type="submit"
-                            className="bg-[#4EDB4E] hover:bg-[#3CB43C]">
+                            className="bg-[#4EDB4E] hover:bg-[#3CB43C] w-full p-3 mt-5">
                             Entrar
                         </Button>
 

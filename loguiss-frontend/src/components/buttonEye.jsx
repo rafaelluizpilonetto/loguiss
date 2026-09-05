@@ -1,6 +1,6 @@
 import { Eye, EyeClosed } from 'lucide-react';
 
-export function Button_eye({
+export function ButtonEye({
     visualizar_senha,
     setVisualizarSenha,
     className = '',
