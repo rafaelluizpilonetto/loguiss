@@ -82,7 +82,6 @@ function Produtos() {
     });
     const  produto_api = async () => {
         const produtos = await api_produto.get('/list_produtos')
-        console.log(produtos)
         setProducts(produtos.data.produtos)
     }
     useEffect(()=> {
